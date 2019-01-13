@@ -1,11 +1,18 @@
 process.env.NTBA_FIX_319 = 1;
 const telegramBot = require('node-telegram-bot-api');
+const mongoose = require('mongoose');
 const config = require('./config');
 const helper = require('./helper');
 const keyboard = require('./keyboard');
 const kb = require('./keyboard-buttons');
 
 helper.logStart()
+
+mongoose.conncet(config.DB_URL, {
+  useMongoClient: true
+})
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.log(err))
 
 const bot = new telegramBot(config.TOKEN, {
   polling: true
