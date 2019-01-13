@@ -4,7 +4,13 @@
       "uuid": "f123",
       "name": "Beginning",
       "type": "action",
-      "year": "2010"
+      "year": "2010",
+      "rate": "8.665",
+      "length": "2:28",
+      "country": "USA",
+      "link": "https://www.kinopoisk.ru/film/beginning",
+      "picture": "https://www.kinopoisk.ru/images/beginning.jpg",
+      "cinemas": ["c123", "c345"]
     }
   ],
 
