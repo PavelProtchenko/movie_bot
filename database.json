@@ -1,0 +1,23 @@
+{
+  "films": [
+    {
+      "uuid": "f123",
+      "name": "Beginning",
+      "type": "action",
+      "year": "2010"
+    }
+  ],
+
+  "cinemas": [
+     {
+       "uuid": "c123",
+       "name": "World Cinema Plus",
+       "location": {
+         "latitude": 59.883744,
+         "longitude": 30.268672
+        },
+        "url": "https://world-cinema-plus.com",
+        "films": ["f890", "f678", "f567"]
+      }
+  ]
+}
