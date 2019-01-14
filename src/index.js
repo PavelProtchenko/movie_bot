@@ -5,14 +5,23 @@ const config = require('./config');
 const helper = require('./helper');
 const keyboard = require('./keyboard');
 const kb = require('./keyboard-buttons');
+const database = require('../database.json');
 
 helper.logStart()
 
-mongoose.conncet(config.DB_URL, {
-  useMongoClient: true
+mongoose.connect(config.DB_URL, {
+  promiseLibrary: global.Promise
 })
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err))
+
+require('./models/film.model')
+
+const Film = mongoose.model('films')
+
+//database.films.forEach(f => new Film(f).save())
+
+//==============================================
 
 const bot = new telegramBot(config.TOKEN, {
   polling: true
@@ -30,6 +39,15 @@ bot.on('message', msg => {
       bot.sendMessage(chatId, `Выберите жанр`, {
         reply_markup: {keyboard: keyboard.films}
       })
+      break
+    case kb.film.comedy:
+      sendFilmsByQuery(chatId, {type: 'comedy'})
+      break
+    case kb.film.action:
+      sendFilmsByQuery(chatId, {type: 'action'})
+      break
+    case kb.film.random:
+      sendFilmsByQuery(chatId, {})
       break
     case kb.home.cinemas:
       break
@@ -50,3 +68,31 @@ bot.onText(/\/start/, msg => {
     }
   })
 })
+
+//===============================================
+
+function sendFilmsByQuery(chatId, query) {
+  Film.find(query).then(films => {
+    console.log(films);
+    
+    const html = films.map((f, i) => {
+      return `<b>${i + 1}</b> <i>${f.name}</i> - /f${f.uuid}`
+    }).join('\n')
+
+    sendHTML(chatId, html, 'films')
+  })
+}
+
+function sendHTML(chatId, html, kbName = null) {
+  const options = {
+    parse_mode: 'HTML'
+  }
+
+  if (kbName) {
+    options['reply_markup'] = {
+      keyboard: keyboard[kbName]
+    }
+  }
+
+  bot.sendMessage(chatId, html, options)
+}
