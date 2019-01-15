@@ -24,6 +24,16 @@
         },
         "url": "https://world-cinema-plus.com",
         "films": ["f890", "f678", "f567"]
-      }
+      },
+      {
+        "uuid": "c456",
+        "name": "Burger Hazard",
+        "location": {
+          "latitude": 59.933884,
+          "longitude": 29.457231
+        },
+        "url": "https://burger-hazard.com",
+        "films": ["f123", "f789"]
+       }
   ]
 }
