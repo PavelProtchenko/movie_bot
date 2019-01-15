@@ -1,4 +1,4 @@
 module.exports = {
-  TOKEN: '763890277:AAERCYXwp-40Z8r2EzblbqBKd0fx1uDDhhw',
+  TOKEN: 'token',
   DB_URL: 'mongodb://localhost/cinema'
 }

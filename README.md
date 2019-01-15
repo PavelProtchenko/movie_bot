@@ -14,3 +14,6 @@ All necessary info you may find in the file:
 ```node
 package.json
 ```
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
