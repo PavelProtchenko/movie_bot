@@ -53,12 +53,20 @@ bot.on('message', msg => {
       sendFilmsByQuery(chatId, {})
       break
     case kb.home.cinemas:
+      bot.sendMessage(chatId, `Отправить местоположение`, {
+        reply_markup: {
+          keyboard: keyboard.cinemas
+        }
+      })
       break
     case kb.back:
       bot.sendMessage(chatId, `Что хотите посмотреть?`, {
         reply_markup: {keyboard: keyboard.home}
       })
       break
+  }
+  if (msg.location) {
+    console.log(msg.location);
   }
 })
 
