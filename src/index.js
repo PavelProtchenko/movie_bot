@@ -19,9 +19,11 @@ mongoose.connect(config.DB_URL, {
 
 require('./models/film.model')
 require('./models/cinema.model')
+require('./models/user.model')
 
 const Film = mongoose.model('films')
 const Cinema = mongoose.model('cinemas')
+const User = mongoose.model('users')
 
 //database.films.forEach(f => new Film(f).save().catch(e => console.log(e)))
 //database.cinemas.forEach(c => new Cinema(c).save().catch(e => console.log(e)))
