@@ -2,6 +2,8 @@ process.env.NTBA_FIX_319 = 1;
 const telegramBot = require('node-telegram-bot-api');
 const mongoose = require('mongoose');
 const config = require('./config');
+const geolib = require('geolib');
+const _ = require('lodash');
 const helper = require('./helper');
 const keyboard = require('./keyboard');
 const kb = require('./keyboard-buttons');
@@ -67,6 +69,7 @@ bot.on('message', msg => {
   }
   if (msg.location) {
     console.log(msg.location);
+    getCinemasInCoord(chatId, msg.location);
   }
 })
 
@@ -141,3 +144,22 @@ function sendHTML(chatId, html, kbName = null) {
 
   bot.sendMessage(chatId, html, options)
 }
+
+function getCinemasInCoord(chatId, location) {
+  Cinema.find({}).then(cinemas => {
+
+    cinemas.forEach(c => {
+      c.distance = geolib.getDistance(location, c.location) / 1000
+      
+    })
+
+    cinemas = _.sortBy(cinemas, 'distance')
+
+    const html = cinemas.map((c, i) => {
+      return `<b>${i + 1}</b> ${c.name}. <em>Расстояние</em> - <strong>${c.distance}</strong> km. /c${c.uuid}`
+    }).join('\n')
+
+    sendHTML(chatId, html, 'home')
+  })
+}
+
