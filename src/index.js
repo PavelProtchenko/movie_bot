@@ -204,7 +204,7 @@ bot.on('callback_query', query => {
   } else if (type === ACTION_TYPE.TOGGLE_FAV_FILM) {
     toggleFavouriteFilm(userId, query.id, data)
   } else if (type === ACTION_TYPE.SHOW_FILMS) {
-
+    sendFilmsByQuery(userId, {uuid: {'$in': data.filmUuids}})
   }
 })
 
