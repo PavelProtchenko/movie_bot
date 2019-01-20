@@ -48,6 +48,7 @@ bot.on('message', msg => {
 
   switch (msg.text) {
     case kb.home.favourite:
+      showFavouriteFilms(chatId, msg.from.id)
       break
     case kb.home.films:
       bot.sendMessage(chatId, `Выберите жанр`, {
@@ -280,5 +281,27 @@ function toggleFavouriteFilm(userId, queryId, {filmUuid, isFav}) {
           text: answerText
         })
       }).catch(err => console.log(err))
+    }).catch(err => console.log(err))
+}
+
+function showFavouriteFilms(chatId, telegramId) {
+  User.findOne({telegramId})
+    .then(user => {
+      if (user) {
+        Film.find({uuid: {'$in': user.films}}).then(films => {
+          let html
+          if (films.length) {
+            html = films.map((f, i) => {
+              return `<b>${i + 1}</b> ${f.name} - <b>${f.rate}</b> (/f${f.uuid})`
+            }).join('\n')
+          } else {
+            html = 'Вы пока ничего не добавили'
+          }
+
+          sendHTML(chatId, html, 'home')
+        }).catch(err => console.log(err))
+      } else {
+        sendHTML(chatId, 'Вы пока ничего не добавили', 'home')
+      }
     }).catch(err => console.log(err))
 }
