@@ -11,6 +11,42 @@
       "link": "https://www.kinopoisk.ru/film/378150/",
       "picture": "https://www.kinopoisk.ru/images/beginning.jpg",
       "cinemas": ["c123", "c345"]
+    },
+    {
+      "uuid": "f124",
+      "name": "Batman",
+      "type": "action",
+      "year": "2005",
+      "rate": "7.565",
+      "length": "2:20",
+      "country": "USA",
+      "link": "https://www.kinopoisk.ru/film/47237/",
+      "picture": "https://avatars.mds.yandex.net/get-kinopoisk-image/1900788/e004cccc-2c9c-4381-9006-02f807eeeed8/3840x",
+      "cinemas": ["c459", "c457"]
+    },
+    {
+      "uuid": "f125",
+      "name": "Home alone",
+      "type": "comedy",
+      "year": "1990",
+      "rate": "7.565",
+      "length": "1:43",
+      "country": "USA",
+      "link": "https://www.kinopoisk.ru/film/8124/",
+      "picture": "https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/264258a4-c4b7-4d96-a086-c6c9c5d2f165/3840x",
+      "cinemas": ["c459", "c457"]
+    },
+    {
+      "uuid": "f126",
+      "name": "Peter Rabbit 2: The Runaway",
+      "type": "comedy",
+      "year": "1990",
+      "rate": "7.565",
+      "length": "1:33",
+      "country": "USA",
+      "link": "https://www.kinopoisk.ru/film/1122117/",
+      "picture": "https://www.kinopoisk.ru/picture/3423550/",
+      "cinemas": ["c459", "c457"]
     }
   ],
 
@@ -34,6 +70,36 @@
         },
         "url": "https://burger-hazard.com",
         "films": ["f123", "f789"]
+       },
+      {
+        "uuid": "c457",
+        "name": "Marmaris Cinema",
+        "location": {
+          "latitude": 36.844593,
+          "longitude": 28.253865
+        },
+        "url": "https://marmaris-cinema.com",
+        "films": ["f124", "f125"]
+       },
+      {
+        "uuid": "c458",
+        "name": "Cool Marmaris Cinema",
+        "location": {
+          "latitude": 36.850024218387865,
+          "longitude": 28.252104520584677
+        },
+        "url": "https://cool-marmaris-cinema.com",
+        "films": ["f123", "f789"]
+       },
+      {
+        "uuid": "c459",
+        "name": "Central Marmaris Cinema",
+        "location": {
+          "latitude": 36.85649230703507,
+          "longitude": 28.27018755836608
+        },
+        "url": "https://central-marmaris-cinema.com",
+        "films": ["f124", "f789", "f125"]
        }
   ]
 }

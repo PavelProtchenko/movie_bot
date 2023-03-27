@@ -8,6 +8,8 @@ const helper = require('./helper');
 const keyboard = require('./keyboard');
 const kb = require('./keyboard-buttons');
 const database = require('../database.json');
+const localeService = require('./services/localeService');
+const { __ } = require('i18n');
 
 helper.logStart()
 
@@ -25,8 +27,9 @@ const Film = mongoose.model('films')
 const Cinema = mongoose.model('cinemas')
 const User = mongoose.model('users')
 
-//database.films.forEach(f => new Film(f).save().catch(e => console.log(e)))
-//database.cinemas.forEach(c => new Cinema(c).save().catch(e => console.log(e)))
+// uncomment two lines below to add cinemas and movies to database
+// database.films.forEach(f => new Film(f).save().catch(e => console.log(e)))
+// database.cinemas.forEach(c => new Cinema(c).save().catch(e => console.log(e)))
 
 const ACTION_TYPE = {
   TOGGLE_FAV_FILM: 'tff',
@@ -42,40 +45,49 @@ const bot = new telegramBot(config.TOKEN, {
 });
 
 bot.on('message', msg => {
-  console.log('Working', msg.from.first_name)
+  console.log('Working', msg.from.first_name, msg.from.last_name)
 
-  const chatId = helper.getChatId(msg);
+  if (msg.from.language_code) {
+    localeService(msg.from.language_code);
 
-  switch (msg.text) {
-    case kb.home.favourite:
-      showFavouriteFilms(chatId, msg.from.id)
+    const chatId = helper.getChatId(msg);
+
+    bot.setMyCommands([
+      {command: '/start', description: __('startMsgBtn')},
+    ])
+
+    switch (msg.text) {
+      case kb.home.favourite:
+        showFavouriteFilms(chatId, msg.from.id)
+        break
+      case kb.home.films:
+        console.log(keyboard.films)
+        bot.sendMessage(chatId, __('chooseText'), {
+          reply_markup: {keyboard: keyboard.films}
+        })
+        break
+      case kb.film.comedy:
+        sendFilmsByQuery(chatId, {type: 'comedy'})
+        break
+      case kb.film.action:
+        sendFilmsByQuery(chatId, {type: 'action'})
+        break
+      case kb.film.random:
+        sendFilmsByQuery(chatId, {})
+        break
+      case kb.home.cinemas:
+        bot.sendMessage(chatId, __('sendGeoText'), {
+          reply_markup: {
+            keyboard: keyboard.cinemas
+          }
+        })
+        break
+      case kb.back:
+        bot.sendMessage(chatId, __('toWatchText'), {
+          reply_markup: {keyboard: keyboard.home}
+        })
       break
-    case kb.home.films:
-      bot.sendMessage(chatId, `Выберите жанр`, {
-        reply_markup: {keyboard: keyboard.films}
-      })
-      break
-    case kb.film.comedy:
-      sendFilmsByQuery(chatId, {type: 'comedy'})
-      break
-    case kb.film.action:
-      sendFilmsByQuery(chatId, {type: 'action'})
-      break
-    case kb.film.random:
-      sendFilmsByQuery(chatId, {})
-      break
-    case kb.home.cinemas:
-      bot.sendMessage(chatId, `Отправить местоположение`, {
-        reply_markup: {
-          keyboard: keyboard.cinemas
-        }
-      })
-      break
-    case kb.back:
-      bot.sendMessage(chatId, `Что хотите посмотреть?`, {
-        reply_markup: {keyboard: keyboard.home}
-      })
-      break
+    }
   }
   if (msg.location) {
     console.log(msg.location);
@@ -84,7 +96,8 @@ bot.on('message', msg => {
 })
 
 bot.onText(/\/start/, msg => {
-  const text = `Здравствуйте, ${msg.from.first_name}\nВыберете команду для начала работы:`
+  let first_name = msg.from.first_name
+  const text = __('helloText', {first_name})
 
   bot.sendMessage(helper.getChatId(msg), text, {
     reply_markup: {
@@ -109,9 +122,9 @@ bot.onText(/\/f(.+)/, (msg, [source, match]) => {
       isFav = user.films.indexOf(film.uuid) !== -1
     }
 
-    const favText = isFav ? 'Удалить из избранного' : 'Добавить в избранное'
+    const favText = isFav ? __('delFavBtn') : __('addFavBtn')
 
-    const caption = `Название: ${film.name}\nГод: ${film.year}\nРейтинг: ${film.rate}\nДлительность: ${film.length}\nСтрана: ${film.country}`
+    const caption = `Title: ${film.name}\nYear: ${film.year}\nRating: ${film.rate}\nDuration: ${film.length}\nCountry: ${film.country}`
     bot.sendPhoto(chatId, film.picture, {
       caption: caption,
       reply_markup: {
@@ -126,7 +139,7 @@ bot.onText(/\/f(.+)/, (msg, [source, match]) => {
               })
             },
             {
-              text: 'Показать кинотеатры',
+              text: __('showCinemaBtn'),
               callback_data: JSON.stringify({
                 type: ACTION_TYPE.SHOW_CINEMAS,
                 cinemaUuids: film.cinemas
@@ -135,7 +148,7 @@ bot.onText(/\/f(.+)/, (msg, [source, match]) => {
           ],
           [
             {
-              text: `Кинопоиск ${film.name}`,
+              text: `Kinopoisk ${film.name}`,
               url: film.link
             }
           ]
@@ -151,7 +164,7 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
 
   Cinema.findOne({uuid: cinemaUuid}).then(cinema => {
     console.log(cinema);
-    bot.sendMessage(chatId, `Кинотеатр ${cinema.name}`, {
+    bot.sendMessage(chatId, `Cinema ${cinema.name}`, {
       reply_markup: {
         inline_keyboard: [
           [
@@ -160,7 +173,7 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
                 url: cinema.url
              },
              {
-                text: 'Показать на карте',
+                text: 'Show on the map',
                 callback_data: JSON.stringify({
                   type: ACTION_TYPE.SHOW_CINEMAS_MAP,
                   lat: cinema.location.latitude,
@@ -170,7 +183,7 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
           ],
           [
              {
-                text: 'Показать фильмы',
+                text: 'Show movies',
                 callback_data: JSON.stringify({
                   type: ACTION_TYPE.SHOW_FILMS,
                   filmUuids: cinema.films
@@ -247,7 +260,7 @@ function getCinemasInCoord(chatId, location) {
     cinemas = _.sortBy(cinemas, 'distance')
 
     const html = cinemas.map((c, i) => {
-      return `<b>${i + 1}</b> ${c.name}. <em>Расстояние</em> - <strong>${c.distance}</strong> km. /c${c.uuid}`
+      return `<b>${i + 1}</b> ${c.name}. <em>Distance</em> - <strong>${c.distance}</strong> km. /c${c.uuid}`
     }).join('\n')
 
     sendHTML(chatId, html, 'home')
@@ -274,7 +287,7 @@ function toggleFavouriteFilm(userId, queryId, {filmUuid, isFav}) {
         })
       }
 
-      const answerText = isFav ? 'Удалено' : 'Добавлено'
+      const answerText = isFav ? 'Deleted' : 'Added'
 
       userPromise.save().then(_ => {
         bot.answerCallbackQuery({
@@ -296,13 +309,13 @@ function showFavouriteFilms(chatId, telegramId) {
               return `<b>${i + 1}</b> ${f.name} - <b>${f.rate}</b> (/f${f.uuid})`
             }).join('\n')
           } else {
-            html = 'Вы пока ничего не добавили'
+            html = 'You did not add anything for a while'
           }
 
           sendHTML(chatId, html, 'home')
         }).catch(err => console.log(err))
       } else {
-        sendHTML(chatId, 'Вы пока ничего не добавили', 'home')
+        sendHTML(chatId, 'You did not add anything for a while', 'home')
       }
     }).catch(err => console.log(err))
 }

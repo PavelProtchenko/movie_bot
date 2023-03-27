@@ -1,0 +1,23 @@
+{
+	"films": "Moviesffff",
+	"favourite": "Favourites",
+	"cinemas": "Cinemas",
+	"random": "Random genre",
+	"action": "Action",
+	"comedy": "Comedy",
+	"back": "Back",
+	"startMsgBtn": "Run bot",
+	"helloText": "Hello, {{first_name}}!\nChoose what you are interested in:",
+	"helloTextPavel": "helloTextPavel",
+	"Pavel": "Pavel",
+	"helloText(first_name)": "helloText(first_name)",
+	"helloText({{first_name}})": "helloText({{first_name}})",
+	"chooseText": "Choose genre",
+	"toWatchText": "What do you want to watch?",
+	"sendGeoText": "Send your geo",
+	"addFavBtn": "Add to favourites",
+	"delFavBtn": "Delete from favourites",
+	"captionText": "",
+	"showCinemaBtn": "Show cinemas",
+	"Favourites": "Favourites"
+}

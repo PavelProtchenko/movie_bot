@@ -13,7 +13,7 @@ module.exports = {
   cinemas: [
     [
       {
-         text: 'Отправить местоположение',
+         text: 'Send your location',
          request_location: true
       }
     ],
