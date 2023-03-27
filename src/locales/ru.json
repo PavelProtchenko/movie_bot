@@ -13,6 +13,19 @@
   "sendGeoText": "Отправь геолокацию",
   "addFavBtn": "Добавить в избранное",
   "delFavBtn": "Удалить из ибранного",
-  "captionText": "",
-  "showCinemaBtn": "Показать кинотеатры"
+  "title": "Название",
+	"year": "Год",
+	"rating": "Рейтинг",
+	"duration": "Длительность",
+	"country": "Страна",
+  "showCinemaBtn": "Показать кинотеатры",
+  "kinopoiskBtn": "Кинопоиск",
+  "cinemaText": "Кинотеатр",
+  "showOnMapBtn": "Показать на карте",
+  "showMoviesBtn": "Показать фильмы",
+  "distance": "Расстояние",
+  "km": "км",
+  "added": "Добавлено",
+  "deleted": "Удалено",
+  "notAddAnythingText": "Ты пока ничего не добавил"
 }

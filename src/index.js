@@ -3,13 +3,13 @@ const telegramBot = require('node-telegram-bot-api');
 const mongoose = require('mongoose');
 const config = require('./config');
 const geolib = require('geolib');
+const { __ } = require('i18n');
 const _ = require('lodash');
 const helper = require('./helper');
 const keyboard = require('./keyboard');
 const kb = require('./keyboard-buttons');
 const database = require('../database.json');
 const localeService = require('./services/localeService');
-const { __ } = require('i18n');
 
 helper.logStart()
 
@@ -124,7 +124,7 @@ bot.onText(/\/f(.+)/, (msg, [source, match]) => {
 
     const favText = isFav ? __('delFavBtn') : __('addFavBtn')
 
-    const caption = `Title: ${film.name}\nYear: ${film.year}\nRating: ${film.rate}\nDuration: ${film.length}\nCountry: ${film.country}`
+    const caption = `${__('title')}: ${film.name}\n${__('year')}: ${film.year}\n${__('rating')}: ${film.rate}\n${__('duration')}: ${film.length}\n${__('country')}: ${film.country}`
     bot.sendPhoto(chatId, film.picture, {
       caption: caption,
       reply_markup: {
@@ -148,7 +148,7 @@ bot.onText(/\/f(.+)/, (msg, [source, match]) => {
           ],
           [
             {
-              text: `Kinopoisk ${film.name}`,
+              text: `${__('kinopoiskBtn')} ${film.name}`,
               url: film.link
             }
           ]
@@ -164,7 +164,7 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
 
   Cinema.findOne({uuid: cinemaUuid}).then(cinema => {
     console.log(cinema);
-    bot.sendMessage(chatId, `Cinema ${cinema.name}`, {
+    bot.sendMessage(chatId, `${__('cinemaText')} ${cinema.name}`, {
       reply_markup: {
         inline_keyboard: [
           [
@@ -173,7 +173,7 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
                 url: cinema.url
              },
              {
-                text: 'Show on the map',
+                text: __('showOnMapBtn'),
                 callback_data: JSON.stringify({
                   type: ACTION_TYPE.SHOW_CINEMAS_MAP,
                   lat: cinema.location.latitude,
@@ -183,7 +183,7 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
           ],
           [
              {
-                text: 'Show movies',
+                text: __('showMoviesBtn'),
                 callback_data: JSON.stringify({
                   type: ACTION_TYPE.SHOW_FILMS,
                   filmUuids: cinema.films
@@ -260,7 +260,7 @@ function getCinemasInCoord(chatId, location) {
     cinemas = _.sortBy(cinemas, 'distance')
 
     const html = cinemas.map((c, i) => {
-      return `<b>${i + 1}</b> ${c.name}. <em>Distance</em> - <strong>${c.distance}</strong> km. /c${c.uuid}`
+      return `<b>${i + 1}</b> ${c.name}. <em>${__('distance')}</em> - <strong>${c.distance}</strong> ${__('km')}. /c${c.uuid}`
     }).join('\n')
 
     sendHTML(chatId, html, 'home')
@@ -287,7 +287,7 @@ function toggleFavouriteFilm(userId, queryId, {filmUuid, isFav}) {
         })
       }
 
-      const answerText = isFav ? 'Deleted' : 'Added'
+      const answerText = isFav ? __('deleted') : __('added')
 
       userPromise.save().then(_ => {
         bot.answerCallbackQuery({
@@ -309,13 +309,13 @@ function showFavouriteFilms(chatId, telegramId) {
               return `<b>${i + 1}</b> ${f.name} - <b>${f.rate}</b> (/f${f.uuid})`
             }).join('\n')
           } else {
-            html = 'You did not add anything for a while'
+            html = __('notAddAnythingText')
           }
 
           sendHTML(chatId, html, 'home')
         }).catch(err => console.log(err))
       } else {
-        sendHTML(chatId, 'You did not add anything for a while', 'home')
+        sendHTML(chatId, __('notAddAnythingText'), 'home')
       }
     }).catch(err => console.log(err))
 }
